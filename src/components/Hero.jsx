@@ -6,12 +6,14 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 gsap.registerPlugin(ScrollTrigger);
 
 export default function Hero() {
+  const sectionRef = useRef();
   const lettersRef = useRef([]);
   const statsRef = useRef([]);
   const carRef = useRef();
 
   useEffect(() => {
-    // headline intro
+
+    // headline intro animation
     gsap.from(lettersRef.current, {
       opacity: 0,
       y: 60,
@@ -20,7 +22,7 @@ export default function Hero() {
       ease: "power4.out"
     });
 
-    // stats intro
+    // stats intro animation
     gsap.from(statsRef.current, {
       opacity: 0,
       y: 40,
@@ -30,17 +32,18 @@ export default function Hero() {
       ease: "power2.out"
     });
 
-    // scroll animation professional
+    // scroll animation (ONLY CAR MOVES + SECTION PINNED)
     gsap.to(carRef.current, {
-      x: 600,
-    //   rotate: 15,
-    scale: 1.1,
+      x: 900,
+      scale: 1.1,
       ease: "none",
       scrollTrigger: {
-        trigger: carRef.current,
-        start: "top bottom",
-        end: "bottom top",
-        scrub: 1.5
+        trigger: sectionRef.current,
+        start: "top top",
+        end: "+=1600",
+        scrub: 1.5,
+        pin: true,
+        anticipatePin: 1
       }
     });
 
@@ -55,9 +58,13 @@ export default function Hero() {
   ];
 
   return (
-    <section className="h-screen flex flex-col justify-center items-center relative overflow-hidden">
+    <section
+      ref={sectionRef}
+      className="h-screen flex flex-col justify-center items-center relative overflow-hidden text-center"
+    >
 
-      <h1 className="text-5xl md:text-7xl font-bold tracking-[0.6em] text-center">
+      {/* HEADLINE */}
+      <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold tracking-[0.6em]">
         {text.map((letter, i) => (
           <span
             key={i}
@@ -69,6 +76,7 @@ export default function Hero() {
         ))}
       </h1>
 
+      {/* STATS */}
       <div className="flex gap-10 mt-12">
         {stats.map((item, i) => (
           <div
@@ -82,13 +90,15 @@ export default function Hero() {
         ))}
       </div>
 
+      {/* CAR IMAGE */}
       <img
-  ref={carRef}
-  src="/car.png"
-  style={{ width: "420px", maxWidth: "90vw", height: "auto" }}
-  className="absolute bottom-10 left-10"
-  alt="car"
-/>
+        ref={carRef}
+        src="/car.png"
+        style={{ width: "min(420px, 90vw)", height: "auto" }}
+        className="absolute bottom-10 left-10"
+        alt="car"
+      />
+
     </section>
   );
 }
